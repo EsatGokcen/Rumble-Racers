@@ -6,7 +6,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   preload() {
-    // load assets here later
+    // Load assets here if needed
   }
 
   create() {
@@ -15,10 +15,37 @@ export default class GameScene extends Phaser.Scene {
       fill: '#fff'
     });
 
-    // Example ground
-    this.matter.add.rectangle(400, 580, 800, 40, { isStatic: true });
+    this.createHillyTerrain();
+  }
 
-    // Add car, terrain, etc. later
+  createHillyTerrain() {
+    const startX = 0;
+    const startY = 550;
+    const segmentWidth = 80;
+    const segmentCount = 30;
+    const amplitude = 80;
+
+    const points = [];
+
+    for (let i = 0; i <= segmentCount; i++) {
+      const x = startX + i * segmentWidth;
+      const y = startY - Math.sin(i * 0.5) * amplitude;
+      points.push({ x, y });
+    }
+
+    // Add the bottom corners so the polygon closes
+    points.push({ x: points[points.length - 1].x, y: 600 });
+    points.push({ x: points[0].x, y: 600 });
+
+    // Create terrain body from the points
+    const terrain = this.matter.add.fromVertices(0, 0, points, {
+      isStatic: true,
+      render: { fillStyle: '#888' }
+    }, true);
+
+    if (!terrain) {
+      console.warn('Failed to create terrain!');
+    }
   }
 
   update() {

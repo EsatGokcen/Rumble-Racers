@@ -14,6 +14,9 @@ export default class GameScene extends Phaser.Scene {
       font: '24px Arial',
       fill: '#fff'
     });
+    this.cameras.main.setBounds(0, 0, 3000, 600);
+    this.cameras.main.startFollow({ x: 400, y: 300 }); // Follow dummy point for now
+    this.cameras.main.setBackgroundColor('#1e1e1e');
 
     this.createHillyTerrain();
   }

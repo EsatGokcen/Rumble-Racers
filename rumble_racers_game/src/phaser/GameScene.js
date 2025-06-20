@@ -41,7 +41,7 @@ export default class GameScene extends Phaser.Scene {
     points.push({ x: points[0].x, y: 600 });
 
     // Create terrain body from the points
-    const terrain = this.matter.add.fromVertices(0, 0, points, {
+    const terrain = this.matter.add.fromVertices(0, 0, Phaser.Physics.Matter.Matter.Vertices.create(points),{
       isStatic: true,
       render: { fillStyle: '#888' }
     }, true);

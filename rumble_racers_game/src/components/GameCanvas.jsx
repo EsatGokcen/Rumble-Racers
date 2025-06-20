@@ -31,7 +31,17 @@ const GameCanvas = () => {
     };
   }, []);
 
-  return <div id="game-container" />;
+  return (
+  <div
+    id="game-container"
+    style={{
+      width: '100%',
+      height: '100vh',   // full screen height
+      overflow: 'hidden'
+    }}
+  />
+);
 };
+
 
 export default GameCanvas;

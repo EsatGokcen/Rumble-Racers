@@ -3,16 +3,17 @@ import Phaser from 'phaser';
 import GameScene from '../phaser/GameScene';
 
 const GameCanvas = () => {
+  const containerRef = useRef(null);
   const gameRef = useRef(null);
 
   useLayoutEffect(() => {
-    console.log('Mounting Phaser game...');
-    if (gameRef.current) return;
+    if (!containerRef.current || gameRef.current) return;
 
     const config = {
       type: Phaser.AUTO,
       width: 800,
       height: 600,
+      parent: containerRef.current,
       backgroundColor: '#000000',
       physics: {
         default: 'matter',
@@ -21,28 +22,34 @@ const GameCanvas = () => {
           debug: true
         }
       },
-      scene: [GameScene],
-      parent: 'game-container'
+      scene: [GameScene]
     };
 
+    console.log('Creating Phaser game...');
     gameRef.current = new Phaser.Game(config);
 
     return () => {
-      gameRef.current.destroy(true);
+      if (gameRef.current) {
+        gameRef.current.destroy(true);
+        gameRef.current = null;
+      }
     };
   }, []);
 
   return (
-  <div
-    id="game-container"
-    style={{
-      width: '100%',
-      height: '100vh',   // full screen height
-      overflow: 'hidden'
-    }}
-  />
-);
+    <div
+      ref={containerRef}
+      style={{
+        width: '100%',
+        height: '100vh',
+        overflow: 'hidden',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        background: '#111'
+      }}
+    />
+  );
 };
-
 
 export default GameCanvas;

@@ -6,6 +6,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create() {
+    console.log('GameScene is running');
     this.cameras.main.setBackgroundColor('#222'); // dark background
 
     this.add.text(100, 100, 'Hello from Phaser!', {

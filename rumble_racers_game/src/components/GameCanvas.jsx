@@ -1,11 +1,12 @@
-import { useEffect, useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import Phaser from 'phaser';
 import GameScene from '../phaser/GameScene';
 
 const GameCanvas = () => {
   const gameRef = useRef(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    console.log('Mounting Phaser game...');
     if (gameRef.current) return;
 
     const config = {

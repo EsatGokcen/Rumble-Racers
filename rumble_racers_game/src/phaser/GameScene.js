@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import Vehicle from './vehicle/Vehicle';
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -14,6 +15,13 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.createHillyTerrain();
+
+    // Add vehicle
+    this.vehicle = new Vehicle(this, 200, 400);
+  }
+
+  update() {
+    this.vehicle?.update();
   }
 
   createHillyTerrain() {
@@ -31,16 +39,13 @@ export default class GameScene extends Phaser.Scene {
       points.push({ x, y });
     }
 
-    // Close the terrain shape to the bottom of the screen
     points.push({ x: points[points.length - 1].x, y: 600 });
     points.push({ x: points[0].x, y: 600 });
 
-    // Create physics body
     const terrain = this.matter.add.fromVertices(0, 0, points, { isStatic: true }, true);
 
-    // Draw terrain shape
     const graphics = this.add.graphics();
-    graphics.fillStyle(0x00ff00, 1); // bright green
+    graphics.fillStyle(0x00ff00, 1);
     graphics.beginPath();
     graphics.moveTo(points[0].x, points[0].y);
     for (let i = 1; i < points.length; i++) {
@@ -48,9 +53,5 @@ export default class GameScene extends Phaser.Scene {
     }
     graphics.closePath();
     graphics.fillPath();
-
-    if (!terrain) {
-      console.warn('Failed to create terrain!');
-    }
   }
 }

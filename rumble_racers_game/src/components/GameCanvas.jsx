@@ -22,7 +22,15 @@ const GameCanvas = () => {
           debug: true
         }
       },
-      scene: [GameScene]
+      scene: [GameScene],
+      scale: {
+        mode: Phaser.Scale.RESIZE, // auto-resize to fit window
+        autoCenter: Phaser.Scale.CENTER_BOTH
+      },
+      render: {
+        pixelArt: false, // set to false to enable smoothing
+        antialias: true, // turn on anti-aliasing
+      }
     };
 
     console.log('Creating Phaser game...');

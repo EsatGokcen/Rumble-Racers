@@ -16,7 +16,7 @@ export default class Terrain {
 
     for (let i = 0; i <= segmentCount; i++) {
       const x = startX + i * segmentWidth;
-      const y = startY - Math.sin(i * 0.5) * amplitude;
+      const y = startY - Math.sin(i * 0.25) * amplitude * 0.6 - Math.cos(i * 0.5) * amplitude * 0.4;
       points.push({ x, y });
     }
 

@@ -23,18 +23,23 @@ export default class Terrain {
       points.push({ x, y });
     }
 
-    // Close the shape to form a polygon
+    // Close the polygon
     points.push({ x: points[points.length - 1].x, y: 600 });
     points.push({ x: points[0].x, y: 600 });
 
-    // Create proper Matter.js vertices
-    const { Vertices } = Phaser.Physics.Matter.Matter;
-    const verts = Vertices.create(points, this.scene.matter.world);
+    const MatterLib = Phaser.Physics.Matter.Matter;
 
-    // Create the physics body
+    // Convert to Matter-compatible vertices
+    const verts = MatterLib.Vertices.create(points, this.scene.matter.world);
+
+    // Shift vertices so top-left becomes (0, 0)
+    const bounds = MatterLib.Vertices.bounds(verts);
+    MatterLib.Vertices.translate(verts, { x: -bounds.min.x, y: -bounds.min.y });
+
+    // Add the physics body at the actual position
     const terrain = this.scene.matter.add.fromVertices(
-      0,
-      0,
+      bounds.min.x,
+      bounds.min.y,
       verts,
       { isStatic: true },
       true
@@ -44,7 +49,7 @@ export default class Terrain {
       console.warn('⚠️ Terrain body creation failed.');
     }
 
-    // Draw the terrain after physics
+    // Draw the terrain using original points (absolute)
     const graphics = this.scene.add.graphics();
     graphics.fillStyle(0x00ff00, 1);
     graphics.beginPath();

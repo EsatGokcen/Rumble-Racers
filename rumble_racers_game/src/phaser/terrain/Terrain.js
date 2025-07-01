@@ -33,7 +33,7 @@ export default class Terrain {
     const verts = MatterLib.Vertices.create(points, this.scene.matter.world);
 
     // Shift vertices so top-left becomes (0, 0)
-    const bounds = MatterLib.Vertices.bounds(verts);
+    const bounds = MatterLib.Bounds.create(verts);
     MatterLib.Vertices.translate(verts, { x: -bounds.min.x, y: -bounds.min.y });
 
     // Add the physics body at the actual position
@@ -53,9 +53,9 @@ export default class Terrain {
     const graphics = this.scene.add.graphics();
     graphics.fillStyle(0x00ff00, 1);
     graphics.beginPath();
-    graphics.moveTo(points[0].x, points[0].y);
-    for (let i = 1; i < points.length; i++) {
-      graphics.lineTo(points[i].x, points[i].y);
+    graphics.moveTo(verts[0].x + bounds.min.x, verts[0].y + bounds.min.y);
+    for (let i = 1; i < verts.length; i++) {
+    graphics.lineTo(verts[i].x + bounds.min.x, verts[i].y + bounds.min.y);
     }
     graphics.closePath();
     graphics.fillPath();

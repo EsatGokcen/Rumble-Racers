@@ -16,7 +16,7 @@ export default class GameScene extends Phaser.Scene {
     });
 
     const terrain = new Terrain(this);
-    terrain.generateHills( {amplitude: 120});
+    terrain.generateHills({amplitude: 120});
 
     // Add vehicle
     this.vehicle = new Vehicle(this, 200, 400);

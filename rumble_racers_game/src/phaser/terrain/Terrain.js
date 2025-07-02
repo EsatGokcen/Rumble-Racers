@@ -3,61 +3,40 @@ export default class Terrain {
     this.scene = scene;
   }
 
-  generateHills(options = {}) {
-    const {
-      startX = 0,
-      startY = 550,
-      segmentWidth = 80,
-      segmentCount = 30,
-      amplitude = 80
-    } = options;
-
+  generateHills({
+    startX = 0,
+    startY = 550,
+    segmentWidth = 80,
+    segmentCount = 40,
+    amplitude = 100
+  } = {}) {
     const points = [];
 
+    // 1. Generate points
     for (let i = 0; i <= segmentCount; i++) {
       const x = startX + i * segmentWidth;
-      const y =
-        startY -
-        Math.sin(i * 0.25) * amplitude * 0.6 -
-        Math.cos(i * 0.5) * amplitude * 0.4;
+      const y = startY - Math.sin(i * 0.5) * amplitude * 0.6 - Math.cos(i * 0.2) * amplitude * 0.4;
       points.push({ x, y });
     }
 
-    // Close the polygon
-    points.push({ x: points[points.length - 1].x, y: 600 });
-    points.push({ x: points[0].x, y: 600 });
+    // 2. Add points to close the polygon (bottom right, bottom left)
+    const bottomY = this.scene.scale.height;
+    points.push({ x: points[points.length - 1].x, y: bottomY });
+    points.push({ x: points[0].x, y: bottomY });
 
-    const MatterLib = Phaser.Physics.Matter.Matter;
+    // 3. Create static body directly
+    const matterVerts = points.map(p => ({ x: p.x, y: p.y }));
+    this.scene.matter.add.fromVertices(0, 0, matterVerts, { isStatic: true });
 
-    // Convert to Matter-compatible vertices
-    const verts = MatterLib.Vertices.create(points, this.scene.matter.world);
-
-    // Shift vertices so top-left becomes (0, 0)
-    const bounds = MatterLib.Bounds.create(verts);
-    MatterLib.Vertices.translate(verts, { x: -bounds.min.x, y: -bounds.min.y });
-
-    // Add the physics body at the actual position
-    const terrain = this.scene.matter.add.fromVertices(
-      bounds.min.x,
-      bounds.min.y,
-      verts,
-      { isStatic: true },
-      true
-    );
-
-    if (!terrain) {
-      console.warn('⚠️ Terrain body creation failed.');
+    // 4. Draw filled terrain (visual)
+    const gfx = this.scene.add.graphics();
+    gfx.fillStyle(0x00ff00, 1);
+    gfx.beginPath();
+    gfx.moveTo(points[0].x, points[0].y);
+    for (let i = 1; i < points.length; i++) {
+      gfx.lineTo(points[i].x, points[i].y);
     }
-
-    // Draw the terrain using original points (absolute)
-    const graphics = this.scene.add.graphics();
-    graphics.fillStyle(0x00ff00, 1);
-    graphics.beginPath();
-    graphics.moveTo(verts[0].x + bounds.min.x, verts[0].y + bounds.min.y);
-    for (let i = 1; i < verts.length; i++) {
-    graphics.lineTo(verts[i].x + bounds.min.x, verts[i].y + bounds.min.y);
-    }
-    graphics.closePath();
-    graphics.fillPath();
+    gfx.closePath();
+    gfx.fillPath();
   }
 }
